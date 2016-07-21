@@ -590,6 +590,13 @@ DefineStringKey(TemperatureAssessment);
 - (void)generateContacts {
     NSMutableArray *contacts = [NSMutableArray new];
     
+    CNMutablePostalAddress *address = [[CNMutablePostalAddress alloc] init];
+    address.street = @"543 3rd St.";
+    address.city = @"Catasauqua";
+    address.state = @"PA";
+    address.postalCode = @"18032";
+    address.country = @"USA";
+    
     {
         UIColor *color = BlueColor();
         OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypeCareTeam
@@ -599,6 +606,7 @@ DefineStringKey(TemperatureAssessment);
                                                           phoneNumber:[CNPhoneNumber phoneNumberWithStringValue:@"888-555-5512"]
                                                         messageNumber:[CNPhoneNumber phoneNumberWithStringValue:@"888-555-5512"]
                                                          emailAddress:@"mruiz2@mac.com"
+                                                              address:[address copy]
                                                              monogram:@"MR"
                                                                 image:nil];
         [contacts addObject:contact];
@@ -613,6 +621,7 @@ DefineStringKey(TemperatureAssessment);
                                                           phoneNumber:[CNPhoneNumber phoneNumberWithStringValue:@"888-555-5512"]
                                                         messageNumber:[CNPhoneNumber phoneNumberWithStringValue:@"888-555-5512"]
                                                          emailAddress:@"billjames2@mac.com"
+                                                              address:[address copy]
                                                              monogram:@"BJ"
                                                                 image:nil];
         [contacts addObject:contact];
@@ -626,6 +635,7 @@ DefineStringKey(TemperatureAssessment);
                                                           phoneNumber:[CNPhoneNumber phoneNumberWithStringValue:@"888-555-5512"]
                                                         messageNumber:[CNPhoneNumber phoneNumberWithStringValue:@"888-555-5512"]
                                                          emailAddress:nil
+                                                              address:[address copy]
                                                              monogram:@"TC"
                                                                 image:nil];
         [contacts addObject:contact];

@@ -47,6 +47,7 @@
                         phoneNumber:(CNPhoneNumber *)phoneNumber
                       messageNumber:(CNPhoneNumber *)messageNumber
                        emailAddress:(NSString *)emailAddress
+                            address:(CNPostalAddress *)address
                            monogram:(NSString *)monogram
                               image:(UIImage *)image {
     NSAssert((monogram || image), @"An OCKContact must have either a monogram or an image.");
@@ -60,6 +61,7 @@
         _phoneNumber = [phoneNumber copy];
         _messageNumber = [messageNumber copy];
         _emailAddress = [emailAddress copy];
+        _address = [address copy];
         _monogram = [monogram copy];
         _image = image;
     }
@@ -78,6 +80,7 @@
             OCKEqualObjects(self.phoneNumber, castObject.phoneNumber) &&
             OCKEqualObjects(self.messageNumber, castObject.messageNumber) &&
             OCKEqualObjects(self.emailAddress, castObject.emailAddress) &&
+            OCKEqualObjects(self.address, castObject.address) &&
             OCKEqualObjects(self.monogram, castObject.monogram) &&
             OCKEqualObjects(self.image, castObject.image));
 }
@@ -99,6 +102,7 @@
         OCK_DECODE_OBJ_CLASS(aDecoder, phoneNumber, CNPhoneNumber);
         OCK_DECODE_OBJ_CLASS(aDecoder, messageNumber, CNPhoneNumber);
         OCK_DECODE_OBJ_CLASS(aDecoder, emailAddress, NSString);
+        OCK_DECODE_OBJ_CLASS(aDecoder, address, CNPostalAddress);
         OCK_DECODE_OBJ_CLASS(aDecoder, monogram, NSString);
         OCK_DECODE_IMAGE(aDecoder, image);
     }
@@ -113,6 +117,7 @@
     OCK_ENCODE_OBJ(aCoder, phoneNumber);
     OCK_ENCODE_OBJ(aCoder, messageNumber);
     OCK_ENCODE_OBJ(aCoder, emailAddress);
+    OCK_ENCODE_OBJ(aCoder, address);
     OCK_ENCODE_OBJ(aCoder, monogram);
     OCK_ENCODE_IMAGE(aCoder, image);
 }
@@ -129,6 +134,7 @@
     contact->_phoneNumber = self.phoneNumber;
     contact->_messageNumber = self.messageNumber;
     contact->_emailAddress = [self.emailAddress copy];
+    contact->_address = self.address;
     contact->_monogram = [self.monogram copy];
     contact->_image = self.image;
     return contact;

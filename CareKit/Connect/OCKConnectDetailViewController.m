@@ -33,6 +33,10 @@
 #import "OCKConnectTableViewHeader.h"
 #import "OCKDefines_Private.h"
 
+@import MapKit;
+@import CoreLocation;
+@import CoreSpotlight;
+
 
 static const CGFloat HeaderViewHeight = 225.0;
 
@@ -42,6 +46,8 @@ static const CGFloat HeaderViewHeight = 225.0;
     NSMutableArray<NSString *> *_sectionTitles;
     NSString *_contactInfoSectionTitle;
     NSString *_sharingSectionTitle;
+    
+    CNPhoneNumber *_callNumber;
 }
 
 - (instancetype)initWithContact:(OCKContact *)contact {
@@ -102,8 +108,51 @@ static const CGFloat HeaderViewHeight = 225.0;
     }
 }
 
-
 #pragma mark - Helpers
+
+- (void)registerAddressUserActivity
+{
+    NSMutableDictionary *address = [[NSMutableDictionary alloc] initWithCapacity:6];
+    if (self.contact.address.street) {
+        address[CNPostalAddressStreetKey] = self.contact.address.street;
+    }
+    if (self.contact.address.city) {
+        address[CNPostalAddressCityKey] = self.contact.address.city;
+    }
+    if (self.contact.address.state) {
+        address[CNPostalAddressStateKey] = self.contact.address.state;
+    }
+    if (self.contact.address.postalCode) {
+        address[CNPostalAddressPostalCodeKey] = self.contact.address.postalCode;
+    }
+    if (self.contact.address.country) {
+        address[CNPostalAddressCountryKey] = self.contact.address.country;
+    }
+    
+    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+    [geocoder geocodeAddressDictionary:[address copy] completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error)
+     {
+         if ([placemarks count])
+         {
+             MKPlacemark *placemark = [[MKPlacemark alloc] initWithPlacemark:placemarks[0]];
+             MKMapItem *mapItem = [[MKMapItem alloc] initWithPlacemark:placemark];
+             
+             NSUserActivity *mapsActivity = [[NSUserActivity alloc] initWithActivityType:@"com.careevolution.GreyPoupon.ViewCaregiverContactInfo"];
+             mapsActivity.title = [NSString stringWithFormat:@"Address for %@",self.contact.name];
+             [mapsActivity setEligibleForHandoff:YES];
+             [mapsActivity setEligibleForSearch:YES];
+             [mapsActivity setMapItem:mapItem];
+             [mapsActivity.contentAttributeSet setSupportsNavigation:@1];
+             if (_callNumber) {
+                 [mapsActivity.contentAttributeSet setPhoneNumbers:@[[_callNumber stringValue]]];
+                 [mapsActivity.contentAttributeSet setSupportsPhoneCall:@1];
+             }
+             [mapsActivity becomeCurrent];
+             
+             [self setUserActivity:mapsActivity];
+         }
+     }];
+}
 
 - (void)createTableViewDataArray {
     _tableViewData = [NSMutableArray new];
@@ -114,12 +163,17 @@ static const CGFloat HeaderViewHeight = 225.0;
     
     if (self.contact.phoneNumber) {
         [contactInfoSection addObject:@(OCKConnectTypePhone)];
+        _callNumber = self.contact.phoneNumber;
     }
     if (self.contact.messageNumber) {
         [contactInfoSection addObject:@(OCKConnectTypeMessage)];
     }
     if (self.contact.emailAddress) {
         [contactInfoSection addObject:@(OCKConnectTypeEmail)];
+    }
+    if (self.contact.address) {
+        [contactInfoSection addObject:@(OCKConnectTypeAddress)];
+        [self registerAddressUserActivity];
     }
     
     if (self.delegate) {
@@ -130,7 +184,15 @@ static const CGFloat HeaderViewHeight = 225.0;
                 sharingTitle = delegateTitle;
             }
         }
-        [sharingSection addObject:sharingTitle];
+        
+        BOOL hideShare = NO;
+        if ([self.delegate respondsToSelector:@selector(hideSharingCellForContact:)])
+        {
+            hideShare = [self.delegate hideSharingCellForContact:self.contact];
+        }
+        if (!hideShare) {
+            [sharingSection addObject:sharingTitle];
+        }
     }
     
     if (contactInfoSection.count > 0) {
@@ -147,7 +209,7 @@ static const CGFloat HeaderViewHeight = 225.0;
 
 - (void)makeCallToNumber:(NSString *)number {
     NSString *stringURL = [NSString stringWithFormat:@"tel:%@", number];
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:stringURL]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:stringURL] options:@{} completionHandler:^(BOOL success) {}];
 }
 
 - (void)sendMessageToNumber:(NSString *)number {
@@ -168,6 +230,16 @@ static const CGFloat HeaderViewHeight = 225.0;
     }
 }
 
+- (void)openMapsToAddress:(CNPostalAddress *)address {
+    
+    CNPostalAddressFormatter *formatter = [[CNPostalAddressFormatter alloc] init];
+    NSString *escapedAddress = [[[formatter stringFromPostalAddress:address] stringByReplacingOccurrencesOfString:@"\n" withString:@","] stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+    NSURL *mapsAddress = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://maps.apple.com/?q=%@",escapedAddress]];
+    if ([[UIApplication sharedApplication] canOpenURL:mapsAddress]) {
+        [[UIApplication sharedApplication] openURL:mapsAddress options:@{} completionHandler:^(BOOL success) {}];
+    }
+}
+
 
 #pragma mark - OCKContactInfoTableViewCellDelegate
 
@@ -183,6 +255,10 @@ static const CGFloat HeaderViewHeight = 225.0;
             
         case OCKConnectTypeEmail:
             [self sendEmailToAddress:cell.contact.emailAddress];
+            break;
+            
+        case OCKConnectTypeAddress:
+            [self openMapsToAddress:cell.contact.address];
             break;
     }
 }

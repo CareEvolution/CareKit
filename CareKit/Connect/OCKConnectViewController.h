@@ -66,6 +66,15 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (nullable NSString *)connectViewController:(OCKConnectViewController *)connectViewController titleForSharingCellForContact:(OCKContact *)contact;
 
+/**
+ Asks the delegate if the sharing cell should be hidden for a contact.
+ 
+ @param contact                     The contact that is currently displayed.
+ 
+ @return YES if the cell should be hidden, NO otherwise.
+ */
+- (BOOL)hideSharingCellForContact:(OCKContact *)contact;
+
 @end
 
 

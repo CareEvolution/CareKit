@@ -77,6 +77,7 @@ static const CGFloat IconButtonSize = 35.0;
     if (!_textLabel) {
         _textLabel = [OCKLabel new];
         _textLabel.textStyle = UIFontTextStyleBody;
+        _textLabel.numberOfLines = 0;
         [self addSubview:_textLabel];
     }
     
@@ -88,6 +89,7 @@ static const CGFloat IconButtonSize = 35.0;
     NSString *imageNamed;
     NSString *title;
     NSString *connectTypeText;
+    CNPostalAddressFormatter *formatter = [[CNPostalAddressFormatter alloc] init];
     switch (self.connectType) {
         case OCKConnectTypePhone:
             imageNamed = @"phone";
@@ -105,6 +107,12 @@ static const CGFloat IconButtonSize = 35.0;
             imageNamed = @"email";
             connectTypeText = OCKLocalizedString(@"CONTACT_INFO_EMAIL_TITLE", nil);
             title = self.contact.emailAddress;
+            break;
+            
+        case OCKConnectTypeAddress:
+            imageNamed = @"address";
+            connectTypeText = OCKLocalizedString(@"CONTACT_INFO_ADDRESS_TITLE", nil);
+            title = [formatter stringFromPostalAddress:self.contact.address];
             break;
     }
     UIImage *image = [[UIImage imageNamed:imageNamed inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];

@@ -70,6 +70,7 @@ OCK_CLASS_AVAILABLE
  @param phoneNumber         The contact phone number.
  @param messageNumber       The contact message number.
  @param emailAddress        The contact email address.
+ @param address             The contact address.
  @param monogram            The contact monogram.
  @param image               The contact image.
  
@@ -82,6 +83,7 @@ OCK_CLASS_AVAILABLE
                         phoneNumber:(nullable CNPhoneNumber *)phoneNumber
                       messageNumber:(nullable CNPhoneNumber *)messageNumber
                        emailAddress:(nullable NSString *)emailAddress
+                            address:(nullable CNPostalAddress *)address
                            monogram:(NSString *)monogram
                               image:(nullable UIImage *)image;
 
@@ -133,6 +135,14 @@ OCK_CLASS_AVAILABLE
  not be visible for the contact.
  */
 @property (nonatomic, readonly, nullable) NSString *emailAddress;
+
+/**
+ A CNPostalAddress indicating the address for a contact.
+ 
+ If an address is not specified, the address table view row will
+ not be visible for the contact.
+ */
+@property (nonatomic, readonly, nullable) CNPostalAddress *address;
 
 /**
  A string indicating the monogram for a contact.

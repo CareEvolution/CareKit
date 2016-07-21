@@ -38,7 +38,8 @@ NS_ASSUME_NONNULL_BEGIN
 typedef NS_ENUM(NSInteger, OCKConnectType) {
     OCKConnectTypePhone = 0,
     OCKConnectTypeMessage,
-    OCKConnectTypeEmail
+    OCKConnectTypeEmail,
+    OCKConnectTypeAddress
 };
 
 @interface OCKConnectTableViewCell : OCKTableViewCell

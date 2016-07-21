@@ -448,7 +448,8 @@
 				86E8038E1CB4812F00B5C021 /* OCKLabel.h */,
 				86E8038F1CB4812F00B5C021 /* OCKLabel.m */,
 			);
-			path = Common;
+			name = Common;
+			path = ../Common;
 			sourceTree = "<group>";
 		};
 		248929631C90E70100EBBE1F /* Connect */ = {
@@ -487,6 +488,7 @@
 		248929901C90E80400EBBE1F /* Detail View */ = {
 			isa = PBXGroup;
 			children = (
+				244A923E1CA210F7007B42D6 /* Common */,
 				248929641C90E70100EBBE1F /* OCKConnectDetailViewController.h */,
 				248929651C90E70100EBBE1F /* OCKConnectDetailViewController.m */,
 				2489296A1C90E70100EBBE1F /* OCKConnectTableViewHeader.h */,
@@ -605,7 +607,6 @@
 				241707A61C9A3AB7005D7123 /* Insights */,
 				248929631C90E70100EBBE1F /* Connect */,
 				86EA9A491C9C644E00B93BB1 /* PDF */,
-				244A923E1CA210F7007B42D6 /* Common */,
 				24F8E47A1C93514F003B77BD /* Localization */,
 				248929861C90E71700EBBE1F /* Utilities */,
 				24935CD11C7E341E00B208A9 /* Assets.xcassets */,
@@ -1072,7 +1073,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1114,7 +1115,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1134,6 +1135,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = CareKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.carekit.CareKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1152,6 +1154,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = CareKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.carekit.CareKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";

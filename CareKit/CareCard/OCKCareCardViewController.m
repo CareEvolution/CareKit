@@ -256,19 +256,19 @@
                   completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> * _Nonnull eventsGroupedByActivity, NSError * _Nonnull error) {
                       NSAssert(!error, error.localizedDescription);
                       dispatch_async(dispatch_get_main_queue(), ^{
-                          _events = [NSMutableArray new];
+                          self->_events = [NSMutableArray new];
                           for (NSArray<OCKCarePlanEvent *> *events in eventsGroupedByActivity) {
-                              [_events addObject:[events mutableCopy]];
+                              [self->_events addObject:[events mutableCopy]];
                           }
                           
                           if (self.delegate &&
                               [self.delegate respondsToSelector:@selector(careCardViewController:willDisplayEvents:dateComponents:)]) {
-                              [self.delegate careCardViewController:self willDisplayEvents:[_events copy] dateComponents:_selectedDate];
+                              [self.delegate careCardViewController:self willDisplayEvents:[self->_events copy] dateComponents:self->_selectedDate];
                           }
                           
                           [self updateHeaderView];
                           [self updateWeekView];
-                          [_tableView reloadData];
+                          [self->_tableView reloadData];
                       });
                   }];
 }
@@ -322,8 +322,8 @@
                                       } completion:^(BOOL completed, NSError * _Nullable error) {
                                           NSAssert(!error, error.localizedDescription);
                                           dispatch_async(dispatch_get_main_queue(), ^{
-                                              _weekViewController.careCardWeekView.values = values;
-                                              _weekValues = [values mutableCopy];
+                                              self->_weekViewController.careCardWeekView.values = values;
+                                              self->_weekValues = [values mutableCopy];
                                           });
                                       }];
 }

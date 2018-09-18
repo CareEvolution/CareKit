@@ -76,7 +76,7 @@
 - (void)animateFill {
     if (self.animationEnabled) {
         [UIView animateWithDuration:1.25 delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-            _fillView.frame = CGRectMake(CGRectGetMinX(self.bounds), CGRectGetMaxY(self.bounds), CGRectGetMaxX(self.bounds), -_value * CGRectGetMaxY(self.bounds));
+            self->_fillView.frame = CGRectMake(CGRectGetMinX(self.bounds), CGRectGetMaxY(self.bounds), CGRectGetMaxX(self.bounds), -self->_value * CGRectGetMaxY(self.bounds));
         } completion:^(BOOL finished) {
         }];
     } else {

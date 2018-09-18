@@ -382,16 +382,16 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     __weak typeof(self) weakSelf = self;
     [context performBlock:^{
         
-        if (_cachedActivities == nil) {
+        if (self->_cachedActivities == nil) {
             NSError *errorOut = nil;
             __strong typeof(weakSelf) strongSelf = weakSelf;
-            _cachedActivities = [strongSelf block_fetchItemsWithEntityName:OCKEntityNameActivity class:[OCKCarePlanActivity class] error:&errorOut];
+            self->_cachedActivities = [strongSelf block_fetchItemsWithEntityName:OCKEntityNameActivity class:[OCKCarePlanActivity class] error:&errorOut];
         }
-        NSArray *activities = _cachedActivities;
+        NSArray *activities = self->_cachedActivities;
         if (predicate) {
-            activities = [_cachedActivities filteredArrayUsingPredicate:predicate];
+            activities = [self->_cachedActivities filteredArrayUsingPredicate:predicate];
         }
-        dispatch_async(_queue, ^{
+        dispatch_async(self->_queue, ^{
             completion(errorOut == nil, activities , errorOut);
         });
     }];
@@ -408,15 +408,15 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     if (result){
         dispatch_async(dispatch_get_main_queue(), ^{
             if (type == OCKCarePlanActivityTypeIntervention &&
-                _careCardUIDelegate && [_careCardUIDelegate respondsToSelector:@selector(carePlanStoreActivityListDidChange:)]) {
-                [_careCardUIDelegate carePlanStoreActivityListDidChange:self];
+                self->_careCardUIDelegate && [self->_careCardUIDelegate respondsToSelector:@selector(carePlanStoreActivityListDidChange:)]) {
+                [self->_careCardUIDelegate carePlanStoreActivityListDidChange:self];
             }
             if (type == OCKCarePlanActivityTypeAssessment &&
-                _symptomTrackerUIDelegate && [_symptomTrackerUIDelegate respondsToSelector:@selector(carePlanStoreActivityListDidChange:)]) {
-                [_symptomTrackerUIDelegate carePlanStoreActivityListDidChange:self];
+                self->_symptomTrackerUIDelegate && [self->_symptomTrackerUIDelegate respondsToSelector:@selector(carePlanStoreActivityListDidChange:)]) {
+                [self->_symptomTrackerUIDelegate carePlanStoreActivityListDidChange:self];
             }
-            if (_delegate && [_delegate respondsToSelector:@selector(carePlanStoreActivityListDidChange:)]) {
-                [_delegate carePlanStoreActivityListDidChange:self];
+            if (self->_delegate && [self->_delegate respondsToSelector:@selector(carePlanStoreActivityListDidChange:)]) {
+                [self->_delegate carePlanStoreActivityListDidChange:self];
             }
         });
     }
@@ -441,9 +441,9 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
         NSError *errorOut = nil;
         result = [strongSelf block_addItemWithEntityName:OCKEntityNameActivity coreDataClass:[OCKCDCarePlanActivity class] sourceItem:activity error:&errorOut];
         if (result) {
-            _cachedActivities = nil;
+            self->_cachedActivities = nil;
         }
-        dispatch_async(_queue, ^{
+        dispatch_async(self->_queue, ^{
             completion(result, errorOut);
             [self handleActivityListChange:result type:activity.type];
         });
@@ -469,10 +469,10 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
         NSError *error = nil;
         result = [strongSelf block_removeItemWithEntityName:OCKEntityNameActivity identifier:activity.identifier error:&error];
         if (result) {
-            _cachedActivities = nil;
+            self->_cachedActivities = nil;
         }
         
-        dispatch_async(_queue, ^{
+        dispatch_async(self->_queue, ^{
             completion(result, error);
             [self handleActivityListChange:result type:activity.type];
         });
@@ -510,13 +510,13 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                                                    } error:&errorOut];
         OCKCarePlanActivity *modifiedActivity;
         if (result) {
-            _cachedActivities = nil;
+            self->_cachedActivities = nil;
             modifiedActivity = [strongSelf block_fetchItemWithEntityName:OCKEntityNameActivity
                                                               identifier:activity.identifier
                                                                    class:[OCKCarePlanActivity class]
                                                                    error:&errorOut];
         }
-        dispatch_async(_queue, ^{
+        dispatch_async(self->_queue, ^{
             completion(result, modifiedActivity, errorOut);
             [self handleActivityListChange:result type:activity.type];
         });
@@ -547,7 +547,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                                   processedCount++;
                                   errorOut = error;
                                   if (items.count == processedCount) {
-                                      dispatch_async(_queue, ^{
+                                      dispatch_async(self->_queue, ^{
                                           completion(eventGroups, errorOut);
                                       });
                                   }
@@ -615,7 +615,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                 }
             }
             
-            dispatch_async(_queue, ^{
+            dispatch_async(self->_queue, ^{
                 completion([eventGroup copy], error);
             });
         }];
@@ -730,7 +730,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
             errorOut = [NSError errorWithDomain:OCKErrorDomain code:OCKErrorObjectNotFound userInfo:@{@"reason": @"Event not found."}];
         }
         
-        dispatch_async(_queue, ^(){
+        dispatch_async(self->_queue, ^(){
             completion(result, result ? copiedEvent : event, errorOut);
             
             if (result) {
@@ -739,17 +739,17 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if(type == OCKCarePlanActivityTypeIntervention &&
-                       _careCardUIDelegate &&
-                       [_careCardUIDelegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfEvent:)]) {
-                        [_careCardUIDelegate carePlanStore:self didReceiveUpdateOfEvent:copiedEvent];
+                       self->_careCardUIDelegate &&
+                       [self->_careCardUIDelegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfEvent:)]) {
+                        [self->_careCardUIDelegate carePlanStore:self didReceiveUpdateOfEvent:copiedEvent];
                     }
                     if(type == OCKCarePlanActivityTypeAssessment
-                       && _symptomTrackerUIDelegate
-                       && [_symptomTrackerUIDelegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfEvent:)]) {
-                        [_symptomTrackerUIDelegate carePlanStore:self didReceiveUpdateOfEvent:copiedEvent];
+                       && self->_symptomTrackerUIDelegate
+                       && [self->_symptomTrackerUIDelegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfEvent:)]) {
+                        [self->_symptomTrackerUIDelegate carePlanStore:self didReceiveUpdateOfEvent:copiedEvent];
                     }
-                    if(_delegate && [_delegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfEvent:)]) {
-                        [_delegate carePlanStore:self didReceiveUpdateOfEvent:copiedEvent];
+                    if(self->_delegate && [self->_delegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfEvent:)]) {
+                        [self->_delegate carePlanStore:self didReceiveUpdateOfEvent:copiedEvent];
                     }
                 });
             }
@@ -875,14 +875,14 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                                                                                              predicate:compoundPredicate
                                                                                                  error:&errorOut];
                                             }
-                                            dispatch_async(_queue, ^{
+                                            dispatch_async(self->_queue, ^{
                                                  handler(day, completed, total);
                                             });
                     
                                             day = [day nextDay];
                                         } while (errorOut == nil && ( [day isEarlierThan:endDate] || [day isEqualToDate:endDate] ));
                                         
-                                        dispatch_async(_queue, ^{
+                                        dispatch_async(self->_queue, ^{
                                             completion(YES, errorOut);
                                         });
                                     }];

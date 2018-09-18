@@ -143,8 +143,8 @@ static const CGFloat HeaderViewHeight = 225.0;
              [mapsActivity setEligibleForSearch:YES];
              [mapsActivity setMapItem:mapItem];
              [mapsActivity.contentAttributeSet setSupportsNavigation:@1];
-             if (_callNumber) {
-                 [mapsActivity.contentAttributeSet setPhoneNumbers:@[[_callNumber stringValue]]];
+             if (self->_callNumber) {
+                 [mapsActivity.contentAttributeSet setPhoneNumbers:@[[self->_callNumber stringValue]]];
                  [mapsActivity.contentAttributeSet setSupportsPhoneCall:@1];
              }
              [mapsActivity becomeCurrent];

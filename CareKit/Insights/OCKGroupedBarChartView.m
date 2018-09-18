@@ -696,7 +696,7 @@ static const CGFloat MarginBetweenGroups = 16.0;
 
 - (void)animateWithDuration:(NSTimeInterval)duration {
     dispatch_async(dispatch_get_main_queue(), ^{
-        for (OCKGroupedBarChartBarGroupView *groupView in _groupsBox.subviews) {
+        for (OCKGroupedBarChartBarGroupView *groupView in self->_groupsBox.subviews) {
             [groupView animationWithDuration:duration];
         }
     });

@@ -230,22 +230,22 @@
               completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> * _Nonnull eventsGroupedByActivity, NSError * _Nonnull error) {
                   NSAssert(!error, error.localizedDescription);
                   dispatch_async(dispatch_get_main_queue(), ^{
-                      if (_delegate &&
-                          [_delegate respondsToSelector:@selector(symptomTrackerViewController:willDisplayEvents:dateComponents:)]) {
-                          [_delegate symptomTrackerViewController:self willDisplayEvents:[eventsGroupedByActivity copy] dateComponents:_selectedDate];
+                      if (self->_delegate &&
+                          [self->_delegate respondsToSelector:@selector(symptomTrackerViewController:willDisplayEvents:dateComponents:)]) {
+                          [self->_delegate symptomTrackerViewController:self willDisplayEvents:[eventsGroupedByActivity copy] dateComponents:self->_selectedDate];
                       }
                       
-                      _events = [NSMutableArray new];
+                      self->_events = [NSMutableArray new];
                       
                       for (NSArray<OCKCarePlanEvent *> *events in eventsGroupedByActivity) {
                           for (OCKCarePlanEvent *event in events) {
-                              [_events addObject:event];
+                              [self->_events addObject:event];
                           }
                       }
                       
                       [self updateHeaderView];
                       [self updateWeekView];
-                      [_tableView reloadData];
+                      [self->_tableView reloadData];
                   });
               }];
 }
@@ -297,8 +297,8 @@
                                   } completion:^(BOOL completed, NSError * _Nullable error) {
                                       NSAssert(!error, error.localizedDescription);
                                       dispatch_async(dispatch_get_main_queue(), ^{
-                                          _weekViewController.symptomTrackerWeekView.values = values;
-                                          _weekValues = [values mutableCopy];
+                                          self->_weekViewController.symptomTrackerWeekView.values = values;
+                                          self->_weekValues = [values mutableCopy];
                                       });
                                   }];
     

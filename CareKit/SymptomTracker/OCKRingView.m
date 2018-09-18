@@ -198,22 +198,22 @@ static const double VALUE_MAX = 1.0;
         } else {
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             
-                [_circleLayer removeAllAnimations];
+                [self->_circleLayer removeAllAnimations];
                 NSUUID *caid = [NSUUID UUID];
-                _transactionID = caid;
+                self->_transactionID = caid;
 
                 [self updateCheckmarkForValue:oldValue];
                 [self updateLabel];
     
                 [CATransaction begin];
                 
-                BOOL reverse = oldValue > _value;
-                double delta = ABS(_value - oldValue);
-                double maxValue = MAX(oldValue, _value);
+                BOOL reverse = oldValue > self->_value;
+                double delta = ABS(self->_value - oldValue);
+                double maxValue = MAX(oldValue, self->_value);
                 
-                [_circleLayer removeFromSuperlayer];
-                _circleLayer = [self createShapeLayerWithValue:maxValue];
-                [self.layer insertSublayer:_circleLayer below:_checkmarkLayer];
+                [self->_circleLayer removeFromSuperlayer];
+                self->_circleLayer = [self createShapeLayerWithValue:maxValue];
+                [self.layer insertSublayer:self->_circleLayer below:self->_checkmarkLayer];
                 
                 CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"strokeStart"];
                 
@@ -232,16 +232,16 @@ static const double VALUE_MAX = 1.0;
                 animation.removedOnCompletion = false;
                 
                 [CATransaction setCompletionBlock:^{
-                    if ([caid isEqual:_transactionID]) {
+                    if ([caid isEqual:self->_transactionID]) {
                         [self updateLabel];
-                        [self updateCheckmarkForValue:_value];
-                        if (_value == VALUE_MIN) {
-                            [_circleLayer removeFromSuperlayer];
+                        [self updateCheckmarkForValue:self->_value];
+                        if (self->_value == VALUE_MIN) {
+                            [self->_circleLayer removeFromSuperlayer];
                         }
                     }
                 }];
                 
-                [_circleLayer addAnimation:animation forKey:animation.keyPath];
+                [self->_circleLayer addAnimation:animation forKey:animation.keyPath];
                 [CATransaction commit];
             });
         }

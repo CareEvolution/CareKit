@@ -206,7 +206,7 @@
         [store preferredUnitsForQuantityTypes:[NSSet setWithObject:type]
                                    completion:^(NSDictionary<HKQuantityType *,HKUnit *> * _Nonnull preferredUnits, NSError * _Nullable error) {
                                        NSAssert(error == nil, error.localizedDescription);
-                                       _preferredUnit = preferredUnits[type];
+                                       self->_preferredUnit = preferredUnits[type];
                                        dispatch_semaphore_signal(sem);
                                    }];
         dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
